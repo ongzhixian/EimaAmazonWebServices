@@ -16,6 +16,8 @@ dotnet tool install -g Amazon.Lambda.Tools
 In .\EimaAmazonWebServices\src\HelloWorldLambda
 dotnet lambda deploy-function HelloWorldLambda
 
+dotnet lambda delete-function HelloWorldLambda
+
 dotnet lambda invoke-function HelloWorldLambda --payload "Just checking if everything is OK"
 
 

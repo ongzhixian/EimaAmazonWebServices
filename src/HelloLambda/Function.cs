@@ -3,11 +3,11 @@ using Amazon.Lambda.Core;
 // Assembly attribute to enable the Lambda function's JSON input to be converted into a .NET class.
 [assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.SystemTextJson.DefaultLambdaJsonSerializer))]
 
-namespace HelloWorldLambda;
+namespace HelloLambda;
 
 public class Function
 {
-
+    
     /// <summary>
     /// A simple function that takes a string and does a ToUpper
     /// </summary>
@@ -18,19 +18,4 @@ public class Function
     {
         return input.ToUpper();
     }
-
-    // public APIGatewayProxyResponse FunctionHandler(string input, ILambdaContext context)
-    // {
-    //     //string message = input.QueryStringParameters["message"];
-    //     string message = "asd hwolr";
-    //
-    //     var response = new APIGatewayProxyResponse
-    //     {
-    //         StatusCode = (int)HttpStatusCode.OK,
-    //         Body = $"Received message: {message}",
-    //         Headers = new Dictionary<string, string> { { "Content-Type", "text/plain" } }
-    //     };
-    //
-    //     return response;
-    // }
 }
