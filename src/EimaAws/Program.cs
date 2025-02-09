@@ -10,6 +10,7 @@ namespace EimaAws
         public static void Main(string[] args)
         {
             var app = new App();
+            
             new EimaAwsStack(app, "EimaAwsStack", new StackProps
             {
                 // If you don't specify 'env', this stack will be environment-agnostic.
@@ -34,9 +35,11 @@ namespace EimaAws
                     Account = "009167579319",
                     Region = "us-east-1",
                 }
+                , Description = "AWS Stack for Eima"
 
                 // For more information, see https://docs.aws.amazon.com/cdk/latest/guide/environments.html
             });
+            
             app.Synth();
         }
     }
