@@ -9,6 +9,7 @@ public class Setup
     {
         string functionIdName = "HelloLambdaFunction";
 
+        // This is for container deployment
         // var buildOption = new BundlingOptions()
         // {
         //     Image = Runtime.DOTNET_8.BundlingImage,
