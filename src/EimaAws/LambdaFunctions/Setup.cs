@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Amazon.CDK;
+using Amazon.CDK.AWS.IAM;
 using Amazon.CDK.AWS.Lambda;
 using Amazon.CDK.AWS.SES.Actions;
 
@@ -85,13 +86,13 @@ public class Setup
         });
     }
 
-    public static void ProjectLambdas(EimaAwsStack eimaAwsStack)
+    public static void ProjectLambdas(EimaAwsStack eimaAwsStack, IRole projectAppIamRole)
     {
-        SetupRegisterNewProjectLambda(eimaAwsStack);
-        SetupGetProjectListLambda(eimaAwsStack);
+        SetupRegisterNewProjectLambda(eimaAwsStack, projectAppIamRole);
+        SetupGetProjectListLambda(eimaAwsStack, projectAppIamRole);
     }
     
-    private static void SetupGetProjectListLambda(EimaAwsStack eimaAwsStack)
+    private static void SetupGetProjectListLambda(EimaAwsStack eimaAwsStack, IRole projectAppIamRole)
     {
         string functionId = $"{GetProjectListFunctionName}Function";
         string functionUrlId = $"{functionId}Url";
@@ -108,6 +109,7 @@ public class Setup
                 { "MY_VARIABLE", "some value" }
             },
             Description = "Get project list",
+            Role = projectAppIamRole
             
         });
         
@@ -134,7 +136,7 @@ public class Setup
         });
     }
 
-    private static void SetupRegisterNewProjectLambda(EimaAwsStack eimaAwsStack)
+    private static void SetupRegisterNewProjectLambda(EimaAwsStack eimaAwsStack, IRole projectAppIamRole)
     {
         string functionId = $"{RegisterNewProjectFunctionName}Function";
         string functionUrlId = $"{functionId}Url";
@@ -150,8 +152,8 @@ public class Setup
             Environment = new System.Collections.Generic.Dictionary<string, string> {
                 { "MY_VARIABLE", "some value" }
             },
-            Description = "Register new project"
-            
+            Description = "Register new project",
+            Role = projectAppIamRole
         });
         
         var functionUrl = new FunctionUrl(eimaAwsStack, functionUrlId, new FunctionUrlProps
