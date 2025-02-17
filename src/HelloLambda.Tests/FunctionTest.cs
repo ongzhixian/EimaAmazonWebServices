@@ -1,6 +1,5 @@
 using Amazon.Lambda.APIGatewayEvents;
 using Xunit;
-using Amazon.Lambda.Core;
 using Amazon.Lambda.TestUtilities;
 
 namespace HelloLambda.Tests;
