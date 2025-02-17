@@ -1,3 +1,4 @@
+using System;
 using Amazon.CDK;
 using Amazon.CDK.AWS.S3;
 
@@ -7,19 +8,58 @@ public class Setup
 {
     public static void EimaTestBucket(EimaAwsStack eimaAwsStack)
     {
-        // var siteBucket = new Bucket(eimaAwsStack, "SiteBucket", new BucketProps
-        // {
-        //     BucketName = siteDomain,
-        //     WebsiteIndexDocument = "index.html",
-        //     WebsiteErrorDocument = "error.html",
-        //     PublicReadAccess = true,
-        //
-        //     // The default removal policy is RETAIN, which means that cdk destroy will not attempt to delete
-        //     // the new bucket, and it will remain in your account until manually deleted. By setting the policy to
-        //     // DESTROY, cdk destroy will attempt to delete the bucket, but will error if the bucket is not empty.
-        //     RemovalPolicy = RemovalPolicy.DESTROY // NOT recommended for production code
-        // });
+        if (!BucketExists(eimaAwsStack, "EimaTestBucket", "eima-test")) CreateEimaTestBucket(eimaAwsStack);
         
+        // try
+        // {
+        //     Bucket existingBucket = Bucket.FromBucketName(this, "ExistingBucket", "eima-test");
+        //
+        //     // If we reach here, the bucket EXISTS.  You can now use existingBucket.
+        //     Console.WriteLine($"Bucket '{bucketName}' already exists. Using existing bucket.");
+        //
+        //     // Example: Granting public read access (use with caution in production!)
+        //     // existingBucket.GrantPublicRead();
+        //
+        // }
+        // catch (System.Exception) // More specific exception handling is recommended
+        // {
+        //     // 2. If FromBucketName throws an exception, the bucket likely DOES NOT exist.
+        //     Console.WriteLine($"Bucket '{bucketName}' does not exist. Creating a new bucket.");
+        //
+        //     // Create the bucket only if it doesn't already exist.
+        //     var newBucket = new Bucket(this, "NewBucket", new BucketProps
+        //     {
+        //         BucketName = bucketName, // Important: Use the same name!
+        //         // ... other bucket properties ...
+        //         // RemovalPolicy = RemovalPolicy.DESTROY // Be very careful with this in production!
+        //     });
+        //
+        //     // Optional: Output the bucket name for confirmation.
+        //     new CfnOutput(this, "BucketNameOutput", new CfnOutputProps
+        //     {
+        //         Value = newBucket.BucketName
+        //     });
+        //
+        // }
+    }
+
+    private static bool BucketExists(EimaAwsStack eimaAwsStack, string bucketId, string bucketName)
+    {
+        try
+        {
+            var existingBucket = Bucket.FromBucketName(eimaAwsStack, bucketId, bucketName);
+            return true;
+        }
+        catch (System.Exception ex) // More specific exception handling is recommended
+        {
+            Console.WriteLine($"Bucket '{bucketName}' does not exist. Creating a new bucket." + ex.Message);
+            return false;
+        }
+    }
+
+
+    private static void CreateEimaTestBucket(EimaAwsStack eimaAwsStack)
+    {
         var eimaTestBucket = new Bucket(eimaAwsStack, "EimaTestBucket", new BucketProps
         {
             // Bucket name (optional, CDK will generate one if not provided)

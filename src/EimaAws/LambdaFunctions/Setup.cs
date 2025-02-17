@@ -1,10 +1,23 @@
+using System.Collections.Generic;
 using Amazon.CDK;
 using Amazon.CDK.AWS.Lambda;
+using Amazon.CDK.AWS.SES.Actions;
 
 namespace EimaAws.LambdaFunctions;
 
 public class Setup
 {
+    const string HelloLambdaFunctionName = "HelloLambdaFunction";
+    const string RegisterNewProjectFunctionName = "RegisterNewProject";
+    const string GetProjectListFunctionName = "GetProjectList";
+    
+    public readonly List<string> LambdaList = [
+        HelloLambdaFunctionName,
+        RegisterNewProjectFunctionName,
+        GetProjectListFunctionName
+    ];
+    
+    
     public static void HelloLambda(EimaAwsStack eimaAwsStack)
     {
         string functionIdName = "HelloLambdaFunction";
@@ -66,6 +79,98 @@ public class Setup
         });
         
         new CfnOutput(eimaAwsStack, "FunctionUrlOutput", new CfnOutputProps
+        {
+            Value = functionUrl.Url,
+            Description = "URL of the Lambda function"
+        });
+    }
+
+    public static void ProjectLambdas(EimaAwsStack eimaAwsStack)
+    {
+        SetupRegisterNewProjectLambda(eimaAwsStack);
+        SetupGetProjectListLambda(eimaAwsStack);
+    }
+    
+    private static void SetupGetProjectListLambda(EimaAwsStack eimaAwsStack)
+    {
+        string functionId = $"{GetProjectListFunctionName}Function";
+        string functionUrlId = $"{functionId}Url";
+
+        var lambdaFunction = new Function(eimaAwsStack, functionId, new FunctionProps
+        {
+            FunctionName = GetProjectListFunctionName,
+            
+            Runtime = Runtime.DOTNET_8,
+            MemorySize = 256,
+            Handler = "ProjectLambdas::ProjectLambdas.ProjectFunctions::GetProjectList",
+            Code = Code.FromAsset("./src/ProjectLambdas/publish"),
+            Environment = new System.Collections.Generic.Dictionary<string, string> {
+                { "MY_VARIABLE", "some value" }
+            },
+            Description = "Get project list",
+            
+        });
+        
+        var functionUrl = new FunctionUrl(eimaAwsStack, functionUrlId, new FunctionUrlProps
+        {
+            Function = lambdaFunction,
+            AuthType = FunctionUrlAuthType.NONE,
+            Cors = new FunctionUrlCorsOptions()
+            {
+                AllowedOrigins = ["*"],
+                AllowedHeaders = ["*"],
+                AllowedMethods = [ HttpMethod.ALL ],
+            }
+        });
+        
+        new CfnOutput(eimaAwsStack, $"{functionId}Arn", new CfnOutputProps {
+            Value = lambdaFunction.FunctionArn
+        });
+        
+        new CfnOutput(eimaAwsStack, $"{functionUrlId}Output", new CfnOutputProps
+        {
+            Value = functionUrl.Url,
+            Description = "URL of the Lambda function"
+        });
+    }
+
+    private static void SetupRegisterNewProjectLambda(EimaAwsStack eimaAwsStack)
+    {
+        string functionId = $"{RegisterNewProjectFunctionName}Function";
+        string functionUrlId = $"{functionId}Url";
+
+        var lambdaFunction = new Function(eimaAwsStack, functionId, new FunctionProps
+        {
+            FunctionName = RegisterNewProjectFunctionName,
+            
+            Runtime = Runtime.DOTNET_8,
+            MemorySize = 256,
+            Handler = "ProjectLambdas::ProjectLambdas.ProjectFunctions::RegisterNewProject",
+            Code = Code.FromAsset("./src/ProjectLambdas/publish"),
+            Environment = new System.Collections.Generic.Dictionary<string, string> {
+                { "MY_VARIABLE", "some value" }
+            },
+            Description = "Register new project"
+            
+        });
+        
+        var functionUrl = new FunctionUrl(eimaAwsStack, functionUrlId, new FunctionUrlProps
+        {
+            Function = lambdaFunction,
+            AuthType = FunctionUrlAuthType.NONE,
+            Cors = new FunctionUrlCorsOptions()
+            {
+                AllowedOrigins = ["*"],
+                AllowedHeaders = ["*"],
+                AllowedMethods = [ HttpMethod.ALL ],
+            }
+        });
+        
+        new CfnOutput(eimaAwsStack, $"{functionId}Arn", new CfnOutputProps {
+            Value = lambdaFunction.FunctionArn
+        });
+        
+        new CfnOutput(eimaAwsStack, $"{functionUrlId}Output", new CfnOutputProps
         {
             Value = functionUrl.Url,
             Description = "URL of the Lambda function"

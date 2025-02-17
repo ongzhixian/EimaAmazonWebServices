@@ -11,7 +11,7 @@ namespace EimaAws
         {
             var app = new App();
             
-            new EimaAwsStack(app, "EimaAwsStack", new StackProps
+            var eimaAwsStack = new EimaAwsStack(app, "EimaAwsStack", new StackProps
             {
                 // If you don't specify 'env', this stack will be environment-agnostic.
                 // Account/Region-dependent features and context lookups will not work,
@@ -39,6 +39,8 @@ namespace EimaAws
 
                 // For more information, see https://docs.aws.amazon.com/cdk/latest/guide/environments.html
             });
+            
+            Tags.Of(eimaAwsStack).Add("project", "eima");
             
             app.Synth();
         }
