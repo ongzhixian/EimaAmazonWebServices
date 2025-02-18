@@ -19,37 +19,40 @@ public class Setup
         
         var projectAppRole = new Role(eimaAwsStack, ProjectAppRoleId, new RoleProps
         {
+            RoleName = ProjectAppRoleId,
             AssumedBy = new ServicePrincipal("lambda.amazonaws.com") // Important: Trust relationship for Lambda
-            , ManagedPolicies = new []
-            {
-                ManagedPolicy.FromAwsManagedPolicyName("AWSLambdaBasicExecutionRole")
-                , ManagedPolicy.FromAwsManagedPolicyName("AmazonDynamoDBFullAccess")
-            }
         });
         
-        projectAppRole.AddToPolicy(new PolicyStatement(new PolicyStatementProps
-        {
-            Actions = new[] { "dynamodb:PutItem", "dynamodb:GetItem" }, // Add other DynamoDB actions as needed
-            Resources = new[]
-            {
-                "arn:aws:dynamodb:us-east-1:009167579319:table/project"
-                , " arn:aws:dynamodb:us-east-1:009167579319:table/configuration"
-                , "arn:aws:dynamodb:us-east-1:009167579319:table/appUser"
-                
-            } // Replace with your DynamoDB table ARN
-        }));
+        projectAppRole.AddManagedPolicy(ManagedPolicy.FromAwsManagedPolicyName("service-role/AWSLambdaBasicExecutionRole"));
+        projectAppRole.AddManagedPolicy(ManagedPolicy.FromAwsManagedPolicyName("AmazonDynamoDBFullAccess"));
+        projectAppRole.AddManagedPolicy(ManagedPolicy.FromAwsManagedPolicyName("AmazonS3FullAccess"));
+        projectAppRole.AddManagedPolicy(ManagedPolicy.FromAwsManagedPolicyName("AmazonSQSFullAccess"));
+        projectAppRole.AddManagedPolicy(ManagedPolicy.FromAwsManagedPolicyName("AmazonSNSFullAccess"));
+        projectAppRole.AddManagedPolicy(ManagedPolicy.FromAwsManagedPolicyName("AmazonEventBridgeFullAccess"));
         
-        projectAppRole.AddToPolicy(new PolicyStatement(new PolicyStatementProps
-        {
-            Actions = new[] { "s3:GetObject" },
-            Resources = new[] { "arn:aws:s3:::lab-bucket1/*" } // Replace with your S3 bucket ARN
-        }));
+        // projectAppRole.AddToPolicy(new PolicyStatement(new PolicyStatementProps
+        // {
+        //     Actions = new[] { "dynamodb:PutItem", "dynamodb:GetItem" }, // Add other DynamoDB actions as needed
+        //     Resources = new[]
+        //     {
+        //         "arn:aws:dynamodb:us-east-1:009167579319:table/project"
+        //         , " arn:aws:dynamodb:us-east-1:009167579319:table/configuration"
+        //         , "arn:aws:dynamodb:us-east-1:009167579319:table/appUser"
+        //         
+        //     } // Replace with your DynamoDB table ARN
+        // }));
+        
+        // projectAppRole.AddToPolicy(new PolicyStatement(new PolicyStatementProps
+        // {
+        //     Actions = new[] { "s3:GetObject" },
+        //     Resources = new[] { "arn:aws:s3:::lab-bucket1/*" } // Replace with your S3 bucket ARN
+        // }));
 
-        projectAppRole.AddToPolicy(new PolicyStatement(new PolicyStatementProps
-        {
-            Actions = new[] { "logs:CreateLogGroup", "logs:CreateLogStream", "logs:PutLogEvents" },
-            Resources = new[] { "arn:aws:logs:*:*:*" } // Or restrict to a specific log group if needed
-        }));
+        // projectAppRole.AddToPolicy(new PolicyStatement(new PolicyStatementProps
+        // {
+        //     Actions = new[] { "logs:CreateLogGroup", "logs:CreateLogStream", "logs:PutLogEvents" },
+        //     Resources = new[] { "arn:aws:logs:*:*:*" } // Or restrict to a specific log group if needed
+        // }));
 
         // Optional: Output the role ARN (useful for cross-stack references)
         new CfnOutput(eimaAwsStack, "projectAppRoleArn", new CfnOutputProps
