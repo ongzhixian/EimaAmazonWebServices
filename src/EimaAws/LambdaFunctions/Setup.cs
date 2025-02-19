@@ -9,7 +9,7 @@ namespace EimaAws.LambdaFunctions;
 public class Setup
 {
     const string HelloLambdaFunctionName = "HelloLambdaFunction";
-    const string RegisterNewProjectFunctionName = "RegisterNewProject";
+    const string RegisterNewProjectFunctionName = "register-project";
     const string GetProjectListFunctionName = "GetProjectList";
     
     public readonly List<string> LambdaList = [
@@ -138,13 +138,14 @@ public class Setup
 
     private static void SetupRegisterNewProjectLambda(EimaAwsStack eimaAwsStack, IRole projectAppIamRole)
     {
+        string projectName = "eima";
+        string moduleName = "project";
         string functionId = $"{RegisterNewProjectFunctionName}Function";
         string functionUrlId = $"{functionId}Url";
 
         var lambdaFunction = new Function(eimaAwsStack, functionId, new FunctionProps
         {
-            FunctionName = RegisterNewProjectFunctionName,
-            
+            FunctionName = $"{projectName}-{moduleName}-{RegisterNewProjectFunctionName}",
             Runtime = Runtime.DOTNET_8,
             MemorySize = 256,
             Handler = "ProjectLambdas::ProjectLambdas.ProjectFunctions::RegisterNewProject",
