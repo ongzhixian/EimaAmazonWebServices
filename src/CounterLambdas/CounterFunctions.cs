@@ -5,7 +5,7 @@ using Amazon.Lambda.Core;
 
 namespace CounterLambdas;
 
-public class Function
+public class CounterFunctions
 {
     
     /// <summary>
@@ -14,8 +14,20 @@ public class Function
     /// <param name="input">The event for the Lambda function handler to process.</param>
     /// <param name="context">The ILambdaContext that provides methods for logging and describing the Lambda environment.</param>
     /// <returns></returns>
-    public string FunctionHandler(string input, ILambdaContext context)
+    public string CreateCounterHandler(string input, ILambdaContext context)
     {
         return input.ToUpper();
     }
+
+    public string FunctionHandler1(string input, ILambdaContext context)
+    {
+        return input.ToUpper();
+    }
+
+    public string FunctionHandler2(string input, ILambdaContext context)
+    {
+        return input.ToUpper();
+    }
+
+
 }

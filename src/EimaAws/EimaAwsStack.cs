@@ -13,7 +13,8 @@ public class EimaAwsStack : Stack
         
         LambdaFunctions.Setup.HelloLambda(this);
         LambdaFunctions.Setup.ProjectLambdas(this, projectAppIamRole);
-        
+        LambdaFunctions.Setup.CounterLambdas(this, projectAppIamRole);
+
         S3Buckets.Setup.EimaTestBucket(this);
         
         DynamoDbTables.Setup.EimaTestTable(this);
