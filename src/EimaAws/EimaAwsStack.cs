@@ -18,5 +18,7 @@ public class EimaAwsStack : Stack
         
         DynamoDbTables.Setup.EimaTestTable(this);
         DynamoDbTables.Setup.EimaProjectTable(this, Setup.TableNames.ProjectTableName);
+        DynamoDbTables.Setup.EimaDynamoDbTable(this, Setup.TableNames.CounterTableName);
+        DynamoDbTables.Setup.EimaDynamoDbTable(this, Setup.TableNames.JobTableName);
     }
 }

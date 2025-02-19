@@ -11,6 +11,30 @@ public class Setup
         public const string ConfigurationTableName = "configuration";
         public const string AppUserTableName = "appUser";
         public const string ProjectTableName = "project";
+        
+        public const string CounterTableName = "counter";
+        public const string JobTableName = "job";
+    }
+
+    public static void EimaDynamoDbTable(EimaAwsStack eimaAwsStack, string tableName)
+    {
+        var tableId = $"{tableName}DynamoDbTable";
+        
+        var dynamoDbTable = new Table(eimaAwsStack, tableId, new TableProps
+        {
+            TableName = tableName, // Optional: Provide a name, or CDK will generate one
+            PartitionKey = new Attribute { Name = "Id", Type = AttributeType.STRING }, // Hash key (required)
+            BillingMode = BillingMode.PROVISIONED, // Optional: Use PROVISIONED for predictable costs
+            ReadCapacity = 1, // Required if BillingMode is PROVISIONED
+            WriteCapacity = 1, // Required if BillingMode is PROVISIONED
+            RemovalPolicy = RemovalPolicy.RETAIN // CAUTION: Be very careful with this in production!
+        });
+        
+        new CfnOutput(eimaAwsStack, $"{tableName}TableNameOutput", new CfnOutputProps
+        {
+            Value = tableName,
+            Description = "The name of the created DynamoDB table"
+        });
     }
     
     public static void EimaTestTable(EimaAwsStack eimaAwsStack)
@@ -112,4 +136,7 @@ public class Setup
             Description = "The name of the created DynamoDB table"
         });
     }
+    
+    
+    
 }
