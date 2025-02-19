@@ -2,31 +2,39 @@ using System.Text.Json;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
 using Amazon.Lambda.APIGatewayEvents;
-using Amazon.Lambda.Core;
-using Amazon.Runtime.Internal.Util;
-using Microsoft.Extensions.Logging.Abstractions;
 using ProjectLambdas.Models;
 
 namespace ProjectLambdas.Services;
 
-public class ProjectService
+public interface IProjectService
+{
+    void PutProject(Project project); // Add/Update
+    void DeleteProject(string projectId);
+    
+    void GetProject(string projectId);
+    
+    void GetAllProjects();
+    
+}
+
+public class ProjectService : IProjectService
 {
     private readonly IAmazonDynamoDB dynamoDbClient;
 
     // Reference: EimaAws.DynamoDbTables.Setup
-    private readonly string TableName = "project"; 
+    private readonly string tableName = "project"; 
+    
     public ProjectService(IAmazonDynamoDB dynamoDbClient)
     {
         this.dynamoDbClient = dynamoDbClient;
-        //ILogger logger;
     }
 
     public async Task WriteToDynamoDB(Project input)
     {
         var item = new Dictionary<string, AttributeValue>
         {
-            { "Id", new AttributeValue { S = input.ProjectName } }, // Example: String primary key
-            { "Version", new AttributeValue { S = input.ProjectVersion } }, // Example: String attribute
+            { "Id", new AttributeValue { S = input.Name } }, // Example: String primary key
+            { "Version", new AttributeValue { S = input.Version } }, // Example: String attribute
             
             //{ "Value", new AttributeValue { N = input.Value.ToString() } }, // Example: Number attribute
             // Add more attributes as needed based on your DynamoDB table schema
@@ -34,7 +42,7 @@ public class ProjectService
 
         var request = new PutItemRequest
         {
-            TableName = TableName,
+            TableName = tableName,
             Item = item
         };
 
@@ -88,5 +96,33 @@ public class ProjectService
         }
         
         return result;
+    }
+
+    public void PutProject(Project project)
+    {
+        
+        //ConvertToDynamoDbItem(project);
+
+        dynamoDbClient.PutItemAsync(this.tableName, ConvertToDynamoDbItem(project));
+    }
+
+    private Dictionary<string, AttributeValue> ConvertToDynamoDbItem(Project project)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void DeleteProject(string projectId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void GetProject(string projectId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void GetAllProjects()
+    {
+        throw new NotImplementedException();
     }
 }
