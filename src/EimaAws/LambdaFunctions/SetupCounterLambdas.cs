@@ -17,7 +17,7 @@ public partial class Setup
     {
         //SetupRegisterNewProjectLambda(eimaAwsStack, projectAppIamRole);
         //SetupGetProjectListLambda(eimaAwsStack, projectAppIamRole);
-        SetupSomeCounterLambda(eimaAwsStack, projectAppIamRole
+        SetupBasicLambda(eimaAwsStack, projectAppIamRole
             , projectName: "eima"
             , moduleName: "counter"
             , functionName: "create-counter"
@@ -32,59 +32,59 @@ public partial class Setup
     }
 
 
-    private static void SetupSomeCounterLambda(EimaAwsStack eimaAwsStack, IRole lambdaIamRole,
-        string projectName, string moduleName, string functionName
-        , string handlerPath
-        , string codePath
-        , string description
-        , Dictionary<string, string> environmentVariables = null
-        , bool useFunctionUrl = false
-        )
-    {
-        string functionId = $"{functionName}Function";
+    //private static void SetupSomeCounterLambda(EimaAwsStack eimaAwsStack, IRole lambdaIamRole,
+    //    string projectName, string moduleName, string functionName
+    //    , string handlerPath
+    //    , string codePath
+    //    , string description
+    //    , Dictionary<string, string> environmentVariables = null
+    //    , bool useFunctionUrl = false
+    //    )
+    //{
+    //    string functionId = $"{functionName}Function";
 
-        var lambdaFunction = new Function(eimaAwsStack, functionId, new FunctionProps
-        {
-            Role = lambdaIamRole,
-            FunctionName = $"{projectName}-{moduleName}-{functionName}",
-            Runtime = Runtime.DOTNET_8,
-            MemorySize = 256,
-            Handler = handlerPath,
-            Code = Code.FromAsset(codePath),
-            Description = description,
-            Environment = environmentVariables
-        });
+    //    var lambdaFunction = new Function(eimaAwsStack, functionId, new FunctionProps
+    //    {
+    //        Role = lambdaIamRole,
+    //        FunctionName = $"{projectName}-{moduleName}-{functionName}",
+    //        Runtime = Runtime.DOTNET_8,
+    //        MemorySize = 256,
+    //        Handler = handlerPath,
+    //        Code = Code.FromAsset(codePath),
+    //        Description = description,
+    //        Environment = environmentVariables
+    //    });
 
-        new CfnOutput(eimaAwsStack, $"{functionId}Arn", new CfnOutputProps
-        {
-            Value = lambdaFunction.FunctionArn
-        });
+    //    new CfnOutput(eimaAwsStack, $"{functionId}Arn", new CfnOutputProps
+    //    {
+    //        Value = lambdaFunction.FunctionArn
+    //    });
 
-        if (useFunctionUrl)
-        {
-            string functionUrlId = $"{functionId}Url";
-            var functionUrl = new FunctionUrl(eimaAwsStack, functionUrlId, new FunctionUrlProps
-            {
-                Function = lambdaFunction,
-                AuthType = FunctionUrlAuthType.NONE,
-                Cors = new FunctionUrlCorsOptions()
-                {
-                    AllowedOrigins = ["*"],
-                    AllowedHeaders = ["*"],
-                    AllowedMethods = [HttpMethod.ALL],
-                }
-            });
+    //    if (useFunctionUrl)
+    //    {
+    //        string functionUrlId = $"{functionId}Url";
+    //        var functionUrl = new FunctionUrl(eimaAwsStack, functionUrlId, new FunctionUrlProps
+    //        {
+    //            Function = lambdaFunction,
+    //            AuthType = FunctionUrlAuthType.NONE,
+    //            Cors = new FunctionUrlCorsOptions()
+    //            {
+    //                AllowedOrigins = ["*"],
+    //                AllowedHeaders = ["*"],
+    //                AllowedMethods = [HttpMethod.ALL],
+    //            }
+    //        });
 
-            new CfnOutput(eimaAwsStack, $"{functionUrlId}Output", new CfnOutputProps
-            {
-                Value = functionUrl.Url,
-                Description = "URL of the Lambda function"
-            });
-        }
-
-
+    //        new CfnOutput(eimaAwsStack, $"{functionUrlId}Output", new CfnOutputProps
+    //        {
+    //            Value = functionUrl.Url,
+    //            Description = "URL of the Lambda function"
+    //        });
+    //    }
 
 
 
-    }
+
+
+    //}
 }

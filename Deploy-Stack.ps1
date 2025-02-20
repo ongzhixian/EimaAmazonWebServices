@@ -2,6 +2,7 @@ Write-Host "Publishing dotnet assets"
 
 dotnet publish .\src\HelloLambda\ --configuration Release --runtime linux-x64 --output .\src\HelloLambda\publish
 dotnet publish .\src\ProjectLambdas\ --configuration Release --runtime linux-x64 --output .\src\ProjectLambdas\publish
+dotnet publish .\src\CounterLambdas\ --configuration Release --runtime linux-x64 --output .\src\CounterLambdas\publish
 
 Write-Host "Deploying EimaAwsStack"
 
