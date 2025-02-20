@@ -1,7 +1,6 @@
 using Amazon.CDK;
 using Amazon.CDK.AWS.IAM;
 using Constructs;
-using EimaAws.DynamoDbTables;
 
 namespace EimaAws;
 
@@ -18,8 +17,10 @@ public class EimaAwsStack : Stack
         S3Buckets.Setup.EimaTestBucket(this);
         
         DynamoDbTables.Setup.EimaTestTable(this);
-        DynamoDbTables.Setup.EimaProjectTable(this, Setup.TableNames.ProjectTableName);
-        DynamoDbTables.Setup.EimaDynamoDbTable(this, Setup.TableNames.CounterTableName);
-        DynamoDbTables.Setup.EimaDynamoDbTable(this, Setup.TableNames.JobTableName);
+        DynamoDbTables.Setup.EimaProjectTable(this, EimaAws.DynamoDbTables.Setup.TableNames.ProjectTableName);
+        DynamoDbTables.Setup.EimaDynamoDbTable(this, EimaAws.DynamoDbTables.Setup.TableNames.CounterTableName);
+        DynamoDbTables.Setup.EimaDynamoDbTable(this, EimaAws.DynamoDbTables.Setup.TableNames.JobTableName);
+
+        ApiGateway.Setup.EimaApiGateway(this);
     }
 }
