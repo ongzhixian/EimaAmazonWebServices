@@ -3,13 +3,26 @@
 using System.Net;
 using System.Net.Mime;
 using System.Text;
+using System.Text.Json;
 
 namespace BaseHttpLambda;
 
 public class HttpResponse
 {
+    private static JsonSerializerOptions jsonSerializerOptionsForWeb = new JsonSerializerOptions(JsonSerializerDefaults.Web);
+
     public static APIGatewayProxyResponse Ok(string body = "", string contentType = MediaTypeNames.Text.Plain, Cookie? cookie = null) =>
         APIGatewayProxyResponseFactory(HttpStatusCode.OK, body, contentType, cookie);
+
+    public static APIGatewayProxyResponse Ok<T>(T serializableObject, Cookie? cookie = null)
+    {
+        var body = JsonSerializer.Serialize<T>(serializableObject, jsonSerializerOptionsForWeb);
+        return APIGatewayProxyResponseFactory(HttpStatusCode.OK, body, MediaTypeNames.Application.Json, cookie);
+    }
+    
+
+    public static APIGatewayProxyResponse BadRequest(string body = "", string contentType = MediaTypeNames.Text.Plain, Cookie? cookie = null) =>
+        APIGatewayProxyResponseFactory(HttpStatusCode.BadRequest, body, contentType, cookie);
 
     private static APIGatewayProxyResponse APIGatewayProxyResponseFactory(
         HttpStatusCode httpStatusCode = HttpStatusCode.OK
@@ -58,4 +71,5 @@ public class HttpResponse
     }
 
 
+    
 }

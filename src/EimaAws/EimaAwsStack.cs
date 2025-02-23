@@ -1,5 +1,10 @@
+using System.Collections.Generic;
+
 using Amazon.CDK;
+using Amazon.CDK.AWS.Apigatewayv2;
 using Amazon.CDK.AWS.IAM;
+using Amazon.CDK.AwsApigatewayv2Integrations;
+
 using Constructs;
 
 namespace EimaAws;
@@ -13,6 +18,7 @@ public class EimaAwsStack : Stack
         LambdaFunctions.Setup.HelloLambda(this);
         LambdaFunctions.Setup.ProjectLambdas(this, projectAppIamRole);
         LambdaFunctions.Setup.CounterLambdas(this, projectAppIamRole);
+        //var authenticateCredentialsHandler = LambdaFunctions.Setup.AuthenticateCredentialsHandler(this, projectAppIamRole);
 
         S3Buckets.Setup.EimaTestBucket(this);
         
@@ -21,6 +27,23 @@ public class EimaAwsStack : Stack
         DynamoDbTables.Setup.EimaDynamoDbTable(this, EimaAws.DynamoDbTables.Setup.TableNames.CounterTableName);
         DynamoDbTables.Setup.EimaDynamoDbTable(this, EimaAws.DynamoDbTables.Setup.TableNames.JobTableName);
 
-        ApiGateway.Setup.EimaApiGateway(this);
+        List<AddRoutesOptions> addRoutesOptionsList =
+        [
+            new AddRoutesOptions
+            {
+                Path = "/authentication",
+                Methods = [HttpMethod.GET],
+                Integration = new HttpLambdaIntegration("authenticateCredentialsHandler", LambdaFunctions.Setup.AuthenticateCredentialsHandler(this, projectAppIamRole))
+            },
+        ];
+
+        //var placeholderLambda = new Function(this, "PlaceholderLambda", new FunctionProps
+        //{
+        //    Runtime = Runtime.NODEJS_16_X,
+        //    Handler = "index.handler", // Even an empty handler is required
+        //    Code = Code.FromInline("") // Or Code.FromAsset if you have a dummy handler
+        //});
+
+        ApiGateway.Setup.EimaApiGateway(this, addRoutesOptionsList);
     }
 }

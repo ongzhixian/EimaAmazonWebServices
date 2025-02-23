@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+
 using Amazon.CDK;
 using Amazon.CDK.AWS.IAM;
 using Amazon.CDK.AWS.Lambda;
@@ -11,14 +12,14 @@ public partial class Setup
     const string HelloLambdaFunctionName = "HelloLambdaFunction";
     const string RegisterNewProjectFunctionName = "register-project";
     const string GetProjectListFunctionName = "GetProjectList";
-    
+
     public readonly List<string> LambdaList = [
         HelloLambdaFunctionName,
         RegisterNewProjectFunctionName,
         GetProjectListFunctionName
     ];
-    
-    
+
+
     public static void HelloLambda(EimaAwsStack eimaAwsStack)
     {
         string functionIdName = "HelloLambdaFunction";
@@ -37,11 +38,11 @@ public partial class Setup
         //     //     " && dotnet lambda package --output-package /asset-output/function.zip"
         //     // }
         // };
-        
+
         var helloWorldLambdaFunction = new Function(eimaAwsStack, functionIdName, new FunctionProps
         {
             FunctionName = functionIdName,
-            
+
             Runtime = Runtime.DOTNET_8,
             MemorySize = 256,
             //LogRetention = RetentionDays.ONE_DAY,
@@ -52,9 +53,9 @@ public partial class Setup
                 { "MY_VARIABLE", "some value" }
             },
             Description = "A sample testing lambda function in EimaAwsStack"
-            
+
         });
-        
+
         var functionUrl = new FunctionUrl(eimaAwsStack, $"{functionIdName}Url", new FunctionUrlProps
         {
             Function = helloWorldLambdaFunction,
@@ -63,7 +64,7 @@ public partial class Setup
             {
                 AllowedOrigins = ["*"],
                 AllowedHeaders = ["*"],
-                AllowedMethods = [ HttpMethod.ALL ],
+                AllowedMethods = [HttpMethod.ALL],
             }
             //Authorization = FunctionUrlAuthType.NONE, // Or IAM if you need authentication
             // Cors = new FunctionUrlCorsOptions // Optional: Configure CORS
@@ -73,12 +74,13 @@ public partial class Setup
             //     AllowedHeaders = new { "*" } // Or specify headers
             // }
         });
-        
-        
-        new CfnOutput(eimaAwsStack, "LambdaFunctionArn", new CfnOutputProps {
+
+
+        new CfnOutput(eimaAwsStack, "LambdaFunctionArn", new CfnOutputProps
+        {
             Value = helloWorldLambdaFunction.FunctionArn
         });
-        
+
         new CfnOutput(eimaAwsStack, "FunctionUrlOutput", new CfnOutputProps
         {
             Value = functionUrl.Url,
@@ -86,14 +88,14 @@ public partial class Setup
         });
     }
 
-    private static void SetupBasicLambda(EimaAwsStack eimaAwsStack, IRole lambdaIamRole,
-    string projectName, string moduleName, string functionName
-    , string handlerPath
-    , string codePath
-    , string description
-    , Dictionary<string, string> environmentVariables = null
-    , bool useFunctionUrl = false
-    )
+    private static Function SetupBasicLambda(EimaAwsStack eimaAwsStack, IRole lambdaIamRole
+        , string projectName, string moduleName, string functionName
+        , string handlerPath
+        , string codePath
+        , string description
+        , Dictionary<string, string> environmentVariables = null
+        , bool useFunctionUrl = false
+        )
     {
         string functionId = $"{functionName}Function";
 
@@ -135,5 +137,7 @@ public partial class Setup
                 Description = "URL of the Lambda function"
             });
         }
+
+        return lambdaFunction;
     }
 }

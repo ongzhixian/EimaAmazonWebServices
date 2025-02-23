@@ -13,13 +13,13 @@ public partial class Setup
     //const string RegisterNewProjectFunctionName2 = "register-project";
     //const string GetProjectListFunctionName2 = "GetProjectList";
 
-    public static void SetupAuthenticationLambdas(EimaAwsStack eimaAwsStack, IRole projectAppIamRole)
+    public static Function AuthenticateCredentialsHandler(EimaAwsStack eimaAwsStack, IRole projectAppIamRole)
     {
         //SetupRegisterNewProjectLambda(eimaAwsStack, projectAppIamRole);
         //SetupGetProjectListLambda(eimaAwsStack, projectAppIamRole);
         var projectName = "AuthenticationLambdas";
 
-        SetupBasicLambda(eimaAwsStack, projectAppIamRole
+        return SetupBasicLambda(eimaAwsStack, projectAppIamRole
             , projectName: "eima"
             , moduleName: "authentication"
             , functionName: "authenticate-credentials"

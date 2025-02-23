@@ -1,4 +1,7 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System.Net;
+using System.Text;
+
+using Microsoft.Extensions.Configuration;
 
 namespace Eima.CounterServices.Tests;
 
@@ -32,8 +35,19 @@ public class CounterServiceTests
     {
         CounterService counterService = new(configuration);
 
+        //Cookie cookie = new Cookie();
+        //cookie.Name = "myCookie";
+        //cookie.Value = "myCookieValue";
+        //cookie.Expires = DateTime.Now.AddHours(2);
+        //cookie.Path = "/";
+        //cookie.HttpOnly = true;
+        //cookie.Secure = true;
+
+        //var x = GetCompleteCookieString(cookie);
+
         Assert.IsNotNull(counterService);
     }
+
 
     [TestMethod()]
     [Priority(1)]
