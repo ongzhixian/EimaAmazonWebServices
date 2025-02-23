@@ -16,5 +16,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BaseHttpLambda\BaseHttpLambda.csproj" />
+    <ProjectReference Include="..\Eima.AuthenticationServices\Eima.AuthenticationServices.csproj" />
   </ItemGroup>
 </Project>
